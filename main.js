@@ -46,14 +46,9 @@ function createWhatsapp() {
     }
   });
 
-  client
-    .initialize()
-    .then(() => {
-      console.log("Successfully initialized");
-    })
-    .catch(() => {
-      console.log("error");
-    });
+  client.initialize().catch((error) => {
+    console.error(error);
+  });
 }
 
 app.on("ready", createWindow);
