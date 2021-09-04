@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body, html {
+    @apply h-full m-0;
+    background: #161b28;
+}
