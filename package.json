@@ -14,6 +14,7 @@
   "dependencies": {
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
+    "vue-qr": "^2.5.0",
     "vue-router": "^3.2.0",
     "vuex": "^3.4.0",
     "whatsapp-web.js": "^1.14.1"
