@@ -8,21 +8,20 @@
 </template>
 
 <style scoped>
+.spinner-container {
+  @apply h-full flex justify-center items-center;
+}
+
 .inner {
-  position: relative;
-  display: inline-block;
-  width: 32px;
-  height: 32px;
+  @apply relative inline-block w-8 h8;
   contain: paint;
 }
 
 .cube {
+  @apply absolute top-0 left-0;
   background-color: #7983f5;
   width: 10px;
   height: 10px;
-  position: absolute;
-  top: 0;
-  left: 0;
   -webkit-animation: spinner-cubes-first 1.8s ease-in-out infinite;
   animation: spinner-cubes-second 1.8s ease-in-out infinite;
 }
@@ -33,17 +32,11 @@
 }
 
 span {
-  margin: 0;
-  padding: 0;
-  border: 0;
+  @apply m-0 p-0 border-0 align-baseline;
   font-weight: inherit;
   font-style: inherit;
   font-family: inherit;
   font-size: 100%;
-  vertical-align: baseline;
-}
-
-span {
   outline: 0;
 }
 
@@ -83,12 +76,5 @@ span {
     -webkit-transform: rotate(-1turn);
     transform: rotate(-1turn);
   }
-}
-
-.spinner-container {
-  display: flex;
-  height: calc(100%);
-  justify-content: center;
-  align-items: center;
 }
 </style>
