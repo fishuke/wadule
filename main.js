@@ -1,5 +1,4 @@
 const { app, BrowserWindow } = require("electron");
-const { ipcRenderer } = require("electron");
 const url = require("url");
 const path = require("path");
 const { Client } = require("whatsapp-web.js");
@@ -14,7 +13,7 @@ function createWindow() {
       nodeIntegration: true,
       enableRemoteModule: true,
       contextIsolation: false,
-      nativeWindowOpen: true
+      nativeWindowOpen: true,
     },
   });
 
@@ -34,17 +33,16 @@ function createWhatsapp() {
   const client = new Client({});
 
   client.on("qr", (qr) => {
-    console.log("QR RECEIVED", qr);
     mainWindow.webContents.send("qr", qr);
   });
 
   client.on("ready", () => {
-    console.log("Client is ready!");
+    mainWindow.webContents.send("ready");
   });
 
   client.on("message", (msg) => {
-    if (msg.body === "!ping") {
-      msg.reply("pong");
+    if (msg.body === "seni seviyorum") {
+      msg.reply("ben de seni seviyorum ❤️");
     }
   });
 

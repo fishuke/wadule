@@ -13,7 +13,7 @@
 }
 
 .inner {
-  @apply relative inline-block w-8 h8;
+  @apply relative inline-block w-8 h-8;
   contain: paint;
 }
 
