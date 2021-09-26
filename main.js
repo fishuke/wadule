@@ -2,6 +2,7 @@ const { app, BrowserWindow } = require("electron");
 const url = require("url");
 const path = require("path");
 const { WAConnection } = require("@adiwajshing/baileys");
+const storage = require("electron-json-storage");
 
 let mainWindow;
 
@@ -42,11 +43,19 @@ async function connectToWhatsApp() {
 
   conn.on("open", () => {
     mainWindow.webContents.send("ready");
-    // const authInfo = conn.base64EncodedAuthInfo();
-    // fs.writeFileSync("./auth_info.json", JSON.stringify(authInfo, null, "\t"));
+    const authInfo = conn.base64EncodedAuthInfo();
+    storage.set("auth", authInfo, () => console.log("Session saved!"));
   });
-  //
-  // conn.loadAuthInfo("./auth_info.json");
+
+  storage.has("auth", function (error, hasKey) {
+    if (error) throw error;
+
+    if (hasKey) {
+      const authInfo = storage.getSync("auth");
+      conn.loadAuthInfo(authInfo);
+    }
+  });
+
   await conn.connect();
 
   conn.on("chat-update", (chatUpdate) => {
