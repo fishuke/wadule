@@ -5,7 +5,6 @@
         <v-icon dark> mdi-plus</v-icon>
       </v-btn>
     </router-link>
-    <!--    {{ getMessages }}-->
     <v-list color="secondary">
       <v-list-item v-for="item in items" :key="item.id">
         <v-icon color="grey lighten-1" class="mr-4">
@@ -32,16 +31,7 @@
   </main>
 </template>
 <script>
-// const os = window.require("os");
-// const storage = window.require("electron-json-storage");
-// storage.setDataPath(os.tmpdir());
-
 export default {
-  // computed: {
-  //   getMessages() {
-  //     return storage.getSync("messages");
-  //   },
-  // },
   data() {
     return {
       items: [
