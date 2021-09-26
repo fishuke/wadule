@@ -3,10 +3,12 @@ const url = require("url");
 const path = require("path");
 const { WAConnection } = require("@adiwajshing/baileys");
 const storage = require("electron-json-storage");
+const os = require("os");
 
 let mainWindow;
 
 function createWindow() {
+  storage.setDataPath(os.tmpdir());
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
@@ -31,19 +33,21 @@ function createWindow() {
 }
 
 async function connectToWhatsApp() {
-  const conn = new WAConnection();
+  const wp = new WAConnection();
 
-  conn.on("contacts-received", () => {
-    console.log("you have " + Object.keys(conn.contacts).length + " contacts");
+  wp.logger.level = "warn";
+
+  wp.on("contacts-received", () => {
+    storage.set("contacts", wp.contacts, () => console.log("Contacts saved!"));
   });
 
-  conn.on("qr", (qr) => {
+  wp.on("qr", (qr) => {
     mainWindow.webContents.send("qr", qr);
   });
 
-  conn.on("open", () => {
+  wp.on("open", () => {
     mainWindow.webContents.send("ready");
-    const authInfo = conn.base64EncodedAuthInfo();
+    const authInfo = wp.base64EncodedAuthInfo();
     storage.set("auth", authInfo, () => console.log("Session saved!"));
   });
 
@@ -52,22 +56,17 @@ async function connectToWhatsApp() {
 
     if (hasKey) {
       const authInfo = storage.getSync("auth");
-      conn.loadAuthInfo(authInfo);
+      wp.loadAuthInfo(authInfo);
     }
   });
 
-  await conn.connect();
-
-  conn.on("chat-update", (chatUpdate) => {
-    if (chatUpdate.messages && chatUpdate.count) {
-      const message = chatUpdate.messages.all()[0];
-      console.log(message);
-    } else console.log(chatUpdate);
-  });
+  await wp.connect();
 }
 
-app.on("ready", createWindow);
-app.on("ready", connectToWhatsApp);
+app.on("ready", () => {
+  createWindow();
+  connectToWhatsApp();
+});
 
 app.on("window-all-closed", function () {
   if (process.platform !== "darwin") app.quit();
