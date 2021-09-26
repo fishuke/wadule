@@ -1,7 +1,7 @@
 const { app, BrowserWindow } = require("electron");
 const url = require("url");
 const path = require("path");
-const { Client } = require("whatsapp-web.js");
+const { WAConnection } = require("@adiwajshing/baileys");
 
 let mainWindow;
 
@@ -29,30 +29,36 @@ function createWindow() {
   });
 }
 
-function createWhatsapp() {
-  const client = new Client({});
+async function connectToWhatsApp() {
+  const conn = new WAConnection();
 
-  client.on("qr", (qr) => {
+  conn.on("contacts-received", () => {
+    console.log("you have " + Object.keys(conn.contacts).length + " contacts");
+  });
+
+  conn.on("qr", (qr) => {
     mainWindow.webContents.send("qr", qr);
   });
 
-  client.on("ready", () => {
+  conn.on("open", () => {
     mainWindow.webContents.send("ready");
+    // const authInfo = conn.base64EncodedAuthInfo();
+    // fs.writeFileSync("./auth_info.json", JSON.stringify(authInfo, null, "\t"));
   });
+  //
+  // conn.loadAuthInfo("./auth_info.json");
+  await conn.connect();
 
-  client.on("message", (msg) => {
-    if (msg.body === "seni seviyorum") {
-      msg.reply("ben de seni seviyorum ❤️");
-    }
-  });
-
-  client.initialize().catch((error) => {
-    console.error(error);
+  conn.on("chat-update", (chatUpdate) => {
+    if (chatUpdate.messages && chatUpdate.count) {
+      const message = chatUpdate.messages.all()[0];
+      console.log(message);
+    } else console.log(chatUpdate);
   });
 }
 
 app.on("ready", createWindow);
-app.on("ready", createWhatsapp);
+app.on("ready", connectToWhatsApp);
 
 app.on("window-all-closed", function () {
   if (process.platform !== "darwin") app.quit();
