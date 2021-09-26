@@ -8,19 +8,19 @@ module.exports = {
   extends: ["plugin:vue/essential", "eslint:recommended", "@vue/prettier"],
 
   parserOptions: {
-    parser: 'babel-eslint',
+    parser: "babel-eslint",
   },
 
   rules: {
-    'no-console': 'off',
-    'no-debugger': 'off',
+    "no-console": "off",
+    "no-debugger": "off",
   },
 
   overrides: [
     {
       files: [
-        '**/__tests__/*.{j,t}s?(x)',
-        '**/tests/unit/**/*.spec.{j,t}s?(x)',
+        "**/__tests__/*.{j,t}s?(x)",
+        "**/tests/unit/**/*.spec.{j,t}s?(x)",
       ],
       env: {
         jest: true,
@@ -28,9 +28,9 @@ module.exports = {
     },
   ],
 
-  'extends': [
-    'plugin:vue/strongly-recommended',
-    'eslint:recommended',
-    '@vue/prettier'
-  ]
+  extends: [
+    "plugin:vue/strongly-recommended",
+    "eslint:recommended",
+    "@vue/prettier",
+  ],
 };
