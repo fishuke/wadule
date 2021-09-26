@@ -5,7 +5,8 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    qr: "",
+    qr: null,
+    contacts: null,
   },
   modules: {},
 });
