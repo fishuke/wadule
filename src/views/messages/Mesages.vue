@@ -1,13 +1,20 @@
 <template>
   <main class="relative">
     <router-link to="/messages/new">
-      <v-btn class="mx-2 absolute right-8 -top-5" fab small dark color="accent">
+      <v-btn
+        data-testid="button"
+        class="mx-2 absolute right-8 -top-5"
+        fab
+        small
+        dark
+        color="accent"
+      >
         <v-icon dark> mdi-plus</v-icon>
       </v-btn>
     </router-link>
     <v-list color="secondary">
       <v-list-item
-        v-for="message in this.$store.state.messages"
+        v-for="message in this.$store ? this.$store.state.messages : []"
         :key="message.id"
       >
         <v-list-item-content>
@@ -34,8 +41,6 @@
   </main>
 </template>
 <script>
-const electron = window.require("electron");
-
 export default {
   data() {
     return {
@@ -44,10 +49,15 @@ export default {
   },
   methods: {
     deleteEntry(message) {
-      this.$store.state.messages = this.$store.state.messages.filter(
-        (item) => item.id !== message.id
-      );
-      electron.ipcRenderer.send("deleteMessage", message);
+      if (this.$store) {
+        this.$store.state.messages = this.$store?.state.messages.filter(
+          (item) => item.id !== message.id
+        );
+      }
+      if (process.env.NODE_ENV === "production") {
+        const electron = window.require("electron");
+        electron.ipcRenderer.send("deleteMessage", message);
+      }
     },
   },
 };

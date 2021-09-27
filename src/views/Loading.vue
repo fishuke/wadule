@@ -1,8 +1,8 @@
 <template>
   <div class="spinner-container">
-    <span class="inner">
-      <span class="cube"></span>
-      <span class="cube"></span>
+    <span data-cy="cubes" class="inner">
+      <span data-testid="cube" class="cube"></span>
+      <span data-testid="cube" class="cube"></span>
     </span>
   </div>
 </template>

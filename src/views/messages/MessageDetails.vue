@@ -44,7 +44,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="px-8">
     <h1 class="text-center text-3xl">{{ message.title }}</h1>
     <h1 class="text-center text-3xl font-extrabold">{{ timeLeft }}</h1>
   </div>

@@ -16,7 +16,6 @@ function setListeners() {
     sendMessage(message);
   });
   ipcMain.on("scheduledMessage", (event, message) => {
-    console.log(message);
     const timeDifference = message.schedule - Date.now();
     if (timeDifference <= 0) return;
     scheduledMessages.push(message);
@@ -41,7 +40,6 @@ function scheduleMessages() {
       scheduledMessages = storage
         .getSync("scheduledMessages")
         .filter((message) => message.schedule > Date.now());
-      console.log(scheduledMessages);
       scheduledMessages.forEach((message) => {
         const timeDifference = message.schedule - Date.now();
         setTimeout(() => sendMessage(message), timeDifference);
@@ -117,7 +115,7 @@ async function connectToWhatsApp() {
 
   whatsappClient.on("open", () => {
     const authInfo = whatsappClient.base64EncodedAuthInfo();
-    storage.set("auth", authInfo, () => console.log("Session saved!"));
+    storage.set("auth", authInfo, null);
 
     setTimeout(() => {
       mainWindow.webContents.send("ready");

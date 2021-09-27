@@ -240,7 +240,6 @@
 </template>
 
 <script>
-const electron = window.require("electron");
 import * as Papa from "papaparse";
 import { v4 as uuidv4 } from "uuid";
 
@@ -313,17 +312,21 @@ export default {
         targets,
       };
 
-      if (schedule.enabled) {
-        message.title = title;
-        message.id = uuidv4();
-        message.schedule = new Date(
-          `${schedule.date}T${schedule.time}`
-        ).getTime();
-        electron.ipcRenderer.send("scheduledMessage", message);
-        this.$store.state.messages.push(message);
-      } else {
-        electron.ipcRenderer.send("instantMessage", message);
+      if (process.env.NODE_ENV === "production") {
+        const electron = window.require("electron");
+        if (schedule.enabled) {
+          message.title = title;
+          message.id = uuidv4();
+          message.schedule = new Date(
+            `${schedule.date}T${schedule.time}`
+          ).getTime();
+          electron.ipcRenderer.send("scheduledMessage", message);
+          this.$store.state.messages.push(message);
+        } else {
+          electron.ipcRenderer.send("instantMessage", message);
+        }
       }
+
       this.$router.push("/messages");
     },
     async toJson(file) {
