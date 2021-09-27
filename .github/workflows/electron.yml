@@ -22,11 +22,13 @@ jobs:
       - name: Install modules
         run: npm i
 
-      - name: Run unit tests
+      - name: Install Cypress
+        uses: cypress-io/github-action@v2
+
+      - name: Run tests
         run: npm run test:unit
 
       - name: Run e2e tests
-        uses: cypress-io/github-action@v2
         run: npm run test:e2e
 
       - name: Build/release Electron app
