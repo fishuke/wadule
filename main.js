@@ -8,6 +8,7 @@ const os = require("os");
 let mainWindow;
 let whatsappClient;
 let scheduledMessages = [];
+const listeners = {};
 
 function setListeners() {
   ipcMain.on("instantMessage", (event, message) => {
@@ -17,7 +18,16 @@ function setListeners() {
     console.log(message);
     scheduledMessages.push(message);
     const timeDifference = message.schedule - Date.now();
-    setTimeout(() => sendMessage(message), timeDifference);
+    listeners[message.id] = setTimeout(
+      () => sendMessage(message),
+      timeDifference
+    );
+  });
+  ipcMain.on("deleteMessage", (event, message) => {
+    const index = scheduledMessages.findIndex(message);
+    scheduledMessages.splice(index, 1);
+    storage.set("scheduledMessages", scheduledMessages, {});
+    clearTimeout(listeners[message.id]);
   });
 }
 
@@ -26,7 +36,10 @@ function scheduleMessages() {
     if (error) throw error;
     if (hasKey) {
       scheduledMessages = storage.getSync("scheduledMessages");
+      mainWindow.webContents.send("scheduledMessages", scheduledMessages);
       scheduledMessages.forEach((message) => {
+        scheduledMessages.push(message);
+        storage.set("scheduledMessages", scheduledMessages, {});
         const timeDifference = message.schedule - Date.now();
         setTimeout(() => sendMessage(message), timeDifference);
       });
@@ -40,6 +53,12 @@ function sendMessage(message) {
       whatsappClient.sendMessage(target, message.content, MessageType.text);
     }, i * 1000);
   });
+
+  if (message.schedule) {
+    const index = scheduledMessages.findIndex(message);
+    scheduledMessages.splice(index, 1);
+    storage.set("scheduledMessages", scheduledMessages, {});
+  }
 }
 
 function createWindow() {

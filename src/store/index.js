@@ -7,6 +7,7 @@ export default new Vuex.Store({
   state: {
     qr: null,
     contacts: [],
+    messages: [],
   },
   modules: {},
 });

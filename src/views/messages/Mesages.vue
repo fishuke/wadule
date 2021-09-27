@@ -6,13 +6,12 @@
       </v-btn>
     </router-link>
     <v-list color="secondary">
-      <v-list-item v-for="item in items" :key="item.id">
-        <v-icon color="grey lighten-1" class="mr-4">
-          {{ item.repeated ? "mdi-repeat" : "mdi-calendar" }}
-        </v-icon>
-
+      <v-list-item
+        v-for="message in this.$store.state.messages"
+        :key="message.id"
+      >
         <v-list-item-content>
-          <v-list-item-title v-text="item.title"></v-list-item-title>
+          <v-list-item-title v-text="message.title"></v-list-item-title>
         </v-list-item-content>
 
         <v-list-item-action>
@@ -22,7 +21,7 @@
         </v-list-item-action>
 
         <v-list-item-action>
-          <v-btn icon @click="deleteEntry(item.id)">
+          <v-btn icon @click="deleteEntry(message)">
             <v-icon color="grey lighten-1">mdi-trash-can</v-icon>
           </v-btn>
         </v-list-item-action>
@@ -31,37 +30,20 @@
   </main>
 </template>
 <script>
+const electron = window.require("electron");
+
 export default {
   data() {
     return {
-      items: [
-        {
-          title: "Günaydın Mesajı",
-          id: 1,
-          repeated: true,
-          targets: [""],
-        },
-        {
-          title: "Travis Howard",
-          id: 2,
-          repeated: false,
-        },
-        {
-          title: "Ali Connors",
-          id: 3,
-          repeated: true,
-        },
-        {
-          title: "Cindy Baker",
-          id: 4,
-          repeated: false,
-        },
-      ],
+      items: [],
     };
   },
   methods: {
-    deleteEntry(id) {
-      this.items = this.items.filter((item) => item.id !== id);
+    deleteEntry(message) {
+      this.$store.state.messages = this.$store.state.messages.filter(
+        (item) => item.id !== message.id
+      );
+      electron.ipcRenderer.send("deleteMessage", message);
     },
   },
 };

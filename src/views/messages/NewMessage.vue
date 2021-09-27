@@ -232,6 +232,7 @@
 <script>
 const electron = window.require("electron");
 import * as Papa from "papaparse";
+import { v4 as uuidv4 } from "uuid";
 
 export default {
   name: "NewMessage",
@@ -301,6 +302,7 @@ export default {
       };
 
       if (schedule.enabled) {
+        message.id = uuidv4();
         message.schedule = new Date(
           `${schedule.date}T${schedule.time}`
         ).getTime();
