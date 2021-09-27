@@ -58,7 +58,7 @@
           :disabled="!schedule.enabled"
           class="border-0"
           v-model="schedule.date"
-          :min="nowDate"
+          :min="minDate"
           full-width
         ></v-date-picker>
         <v-time-picker
@@ -240,14 +240,20 @@ export default {
       return [...this.$store.state.contacts, ...this.extendedContacts];
     },
     minTime() {
-      if (this.nowDate === this.schedule.date) {
-        return new Date().toISOString().slice(11, 19);
+      if (this.minDate === this.schedule.date) {
+        const timezoneOffset = new Date().getTimezoneOffset() * 60000;
+        return new Date(Date.now() - timezoneOffset)
+          .toISOString()
+          .slice(11, 19);
       } else return null;
+    },
+    minDate() {
+      const timezoneOffset = new Date().getTimezoneOffset() * 60000;
+      return new Date(Date.now() - timezoneOffset).toISOString().slice(0, 10);
     },
   },
   data() {
     return {
-      nowDate: new Date().toISOString().slice(0, 10),
       snack: {
         visible: false,
         text: null,
