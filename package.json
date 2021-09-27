@@ -18,6 +18,7 @@
     "electron-json-storage": "^4.5.0",
     "papaparse": "^5.3.1",
     "roboto-fontface": "*",
+    "uuid": "^8.3.2",
     "vue": "^2.6.11",
     "vue-qr": "^2.5.0",
     "vue-router": "^3.2.0",
