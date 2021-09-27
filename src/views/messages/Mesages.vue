@@ -11,7 +11,9 @@
         :key="message.id"
       >
         <v-list-item-content>
-          <v-list-item-title v-text="message.title"></v-list-item-title>
+          <v-list-item-title
+            v-text="message.title ? message.title : 'No Title'"
+          ></v-list-item-title>
         </v-list-item-content>
 
         <v-list-item-action>

@@ -1,6 +1,15 @@
 <template>
   <main class="m-8">
     <template>
+      <v-text-field
+        :rules="titleRules"
+        v-model="title"
+        label="Title"
+        required
+      ></v-text-field>
+    </template>
+
+    <template>
       <div class="flex flex-row justify-center items-center">
         <h1 class="text-center m-8 text-2xl">Select Contacts</h1>
         <v-btn color="primary" @click="sheet = true">Import</v-btn>
@@ -82,10 +91,11 @@
         name="input-7-4"
         label="Content"
         v-model="content"
+        required
       ></v-textarea>
     </template>
 
-    <v-btn block color="accent" @click="sendNow">Send Now!</v-btn>
+    <v-btn block color="accent" @click="sendMessage">Send Now!</v-btn>
 
     <template>
       <v-bottom-sheet v-model="sheet">
@@ -255,6 +265,7 @@ export default {
   },
   data() {
     return {
+      title: "",
       snack: {
         visible: false,
         text: null,
@@ -268,6 +279,7 @@ export default {
       extendedContacts: [],
       valid: false,
       name: "",
+      titleRules: [(v) => !!v || "Title is required"],
       nameRules: [
         (v) => !!v || "Name is required",
         (v) => v.length <= 50 || "Name must be less than 50 characters",
@@ -294,22 +306,25 @@ export default {
       const { index } = data;
       if (index >= 0) this.targets.splice(index, 1);
     },
-    sendNow() {
-      const { schedule, content, targets } = this;
+    sendMessage() {
+      const { schedule, content, targets, title } = this;
       const message = {
         content,
         targets,
       };
 
       if (schedule.enabled) {
+        message.title = title;
         message.id = uuidv4();
         message.schedule = new Date(
           `${schedule.date}T${schedule.time}`
         ).getTime();
         electron.ipcRenderer.send("scheduledMessage", message);
+        this.$store.state.messages.push(message);
       } else {
         electron.ipcRenderer.send("instantMessage", message);
       }
+      this.$router.push("/messages");
     },
     async toJson(file) {
       return new Promise((resolve, reject) => {
