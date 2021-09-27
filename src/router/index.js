@@ -20,7 +20,7 @@ const routes = [
     children: [
       {
         path: "/messages",
-        name: "Messages",
+        name: "Scheduled Messages",
         component: Messages,
       },
       {
