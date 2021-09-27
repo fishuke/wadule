@@ -17,9 +17,11 @@
         </v-list-item-content>
 
         <v-list-item-action>
-          <v-btn icon>
-            <v-icon color="grey lighten-1">mdi-pencil</v-icon>
-          </v-btn>
+          <router-link :to="`/messages/${message.id}`">
+            <v-btn icon>
+              <v-icon color="grey lighten-1">mdi-eye</v-icon>
+            </v-btn>
+          </router-link>
         </v-list-item-action>
 
         <v-list-item-action>

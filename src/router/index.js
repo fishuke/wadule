@@ -5,6 +5,7 @@ import Messages from "../views/messages/Mesages.vue";
 import Login from "../views/Login";
 import Layout from "../design/Layout";
 import NewMessage from "../views/messages/NewMessage";
+import MessageDetails from "../views/messages/MessageDetails";
 
 Vue.use(VueRouter);
 
@@ -27,6 +28,11 @@ const routes = [
         path: "/messages/new",
         name: "New Message",
         component: NewMessage,
+      },
+      {
+        path: "/messages/:id",
+        name: "Message Details",
+        component: MessageDetails,
       },
     ],
   },
