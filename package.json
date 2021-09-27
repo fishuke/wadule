@@ -16,6 +16,7 @@
     "@mdi/font": "5.9.55",
     "core-js": "^3.6.5",
     "electron-json-storage": "^4.5.0",
+    "papaparse": "^5.3.1",
     "roboto-fontface": "*",
     "vue": "^2.6.11",
     "vue-qr": "^2.5.0",
