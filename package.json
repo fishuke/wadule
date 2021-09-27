@@ -9,8 +9,8 @@
     "lint": "vue-cli-service lint",
     "start": "vue-cli-service build && electron .",
     "postinstall": "electron-builder install-app-deps",
-    "build": "electron-builder --mac --windows --linux",
-    "release": "electron-builder --mac --windows --linux --publish always"
+    "build": "electron-builder --windows --linux",
+    "release": "electron-builder --windows --linux --publish always"
   },
   "build": {
     "appId": "com.fishuke.whatsapp-messager",
