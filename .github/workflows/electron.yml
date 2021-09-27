@@ -22,14 +22,19 @@ jobs:
       - name: Install modules
         run: npm i
 
-      - name: Install Cypress
-        uses: cypress-io/github-action@v2
-
-      - name: Run tests
-        run: npm run test:unit
-
       - name: Run e2e tests
-        run: npm run test:e2e
+        uses: cypress-io/github-action@v1
+        with:
+          start: npm run serve
+          wait-on: http://localhost:8080/
+          config_file: cypress.json
+          spec: "tests/e2e/**/*"
+        env:
+          CYPRESS_baseUrl: http://localhost:8080/
+
+
+      - name: Run unit tests
+        run: npm run test:unit
 
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
