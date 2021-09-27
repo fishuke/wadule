@@ -17,10 +17,13 @@ jobs:
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
         with:
-          node-version: 10
+          node-version: 12
 
       - name: Install modules
         run: npm i
+
+      - name: Run unit tests
+        run: npm run test:unit
 
       - name: Run e2e tests
         uses: cypress-io/github-action@v1
@@ -32,9 +35,6 @@ jobs:
         env:
           CYPRESS_baseUrl: http://localhost:8080/
 
-
-      - name: Run unit tests
-        run: npm run test:unit
 
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
