@@ -7,16 +7,38 @@ const os = require("os");
 
 let mainWindow;
 let whatsappClient;
+let scheduledMessages = [];
 
-function listenEvents() {
+function setListeners() {
   ipcMain.on("instantMessage", (event, message) => {
+    sendMessage(message);
+  });
+  ipcMain.on("scheduledMessage", (event, message) => {
     console.log(message);
+    scheduledMessages.push(message);
+    const timeDifference = message.schedule - Date.now();
+    setTimeout(() => sendMessage(message), timeDifference);
+  });
+}
 
-    message.targets.forEach((target, i) => {
-      setTimeout(() => {
-        whatsappClient.sendMessage(target, message.content, MessageType.text);
-      }, i * 1000);
-    });
+function scheduleMessages() {
+  storage.has("scheduledMessages", function (error, hasKey) {
+    if (error) throw error;
+    if (hasKey) {
+      scheduledMessages = storage.getSync("scheduledMessages");
+      scheduledMessages.forEach((message) => {
+        const timeDifference = message.schedule - Date.now();
+        setTimeout(() => sendMessage(message), timeDifference);
+      });
+    }
+  });
+}
+
+function sendMessage(message) {
+  message.targets.forEach((target, i) => {
+    setTimeout(() => {
+      whatsappClient.sendMessage(target, message.content, MessageType.text);
+    }, i * 1000);
   });
 }
 
@@ -48,7 +70,7 @@ function createWindow() {
 async function connectToWhatsApp() {
   whatsappClient = new WAConnection();
 
-  whatsappClient.logger.level = "warn";
+  // whatsappClient.logger.level = "warn";
 
   whatsappClient.on("contacts-received", () => {
     let contacts = whatsappClient.contacts;
@@ -94,7 +116,8 @@ async function connectToWhatsApp() {
 app.on("ready", () => {
   createWindow();
   connectToWhatsApp();
-  listenEvents();
+  setListeners();
+  scheduleMessages();
 });
 
 app.on("window-all-closed", function () {

@@ -45,14 +45,45 @@
       </v-autocomplete>
     </template>
 
-    <h1 class="text-center m-8 text-2xl">Content</h1>
-    <v-textarea
-      solo
-      background-color="secondary"
-      name="input-7-4"
-      label="Content"
-      v-model="content"
-    ></v-textarea>
+    <template>
+      <div class="flex flex-row justify-center items-center">
+        <h1 class="text-center m-8 text-2xl">Schedule</h1>
+        <v-switch
+          v-model="schedule.enabled"
+          :label="`Disable to send instantly.`"
+        ></v-switch>
+      </div>
+      <div class="flex flex-row gap-4 sm:flex-col">
+        <v-date-picker
+          :disabled="!schedule.enabled"
+          class="border-0"
+          v-model="schedule.date"
+          :min="nowDate"
+          full-width
+        ></v-date-picker>
+        <v-time-picker
+          :disabled="!schedule.date || !schedule.enabled"
+          class="border-0"
+          v-model="schedule.time"
+          :min="minTime"
+          format="24hr"
+          use-seconds
+          full-width
+        ></v-time-picker>
+      </div>
+    </template>
+
+    <template>
+      <h1 class="text-center m-8 text-2xl">Content</h1>
+
+      <v-textarea
+        solo
+        background-color="secondary"
+        name="input-7-4"
+        label="Content"
+        v-model="content"
+      ></v-textarea>
+    </template>
 
     <v-btn block color="accent" @click="sendNow">Send Now!</v-btn>
 
@@ -208,6 +239,11 @@ export default {
     getContacts() {
       return [...this.$store.state.contacts, ...this.extendedContacts];
     },
+    minTime() {
+      if (this.nowDate === this.schedule.date) {
+        return new Date().toISOString().slice(11, 19);
+      } else return null;
+    },
   },
   data() {
     return {
@@ -252,11 +288,20 @@ export default {
       if (index >= 0) this.targets.splice(index, 1);
     },
     sendNow() {
+      const { schedule, content, targets } = this;
       const message = {
-        content: this.content,
-        targets: this.targets,
+        content,
+        targets,
       };
-      electron.ipcRenderer.send("instantMessage", message);
+
+      if (schedule.enabled) {
+        message.schedule = new Date(
+          `${schedule.date}T${schedule.time}`
+        ).getTime();
+        electron.ipcRenderer.send("scheduledMessage", message);
+      } else {
+        electron.ipcRenderer.send("instantMessage", message);
+      }
     },
     async toJson(file) {
       return new Promise((resolve, reject) => {
@@ -308,4 +353,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style>
+.v-picker__title {
+  height: 110px;
+}
+</style>
